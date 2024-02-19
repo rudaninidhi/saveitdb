@@ -208,7 +208,7 @@ jobs:
 4. **Flyway Repair:** Repairs the metadata table if necessary.
 5. **Flyway Migrate:** Executes database migrations using Flyway.
 ## Conclusion
-You now have a comprehensive setup covering KindnessKettle, AWS CloudFormation deployment, Flyway installation, and GitHub Actions for automating database migrations, with the added step of creating necessary secrets in GitHub Actions for secure storage of sensitive information.
+You now have a comprehensive setup covering AWS CloudFormation deployment, Flyway installation, and GitHub Actions for automating database migrations, with the added step of creating necessary secrets in GitHub Actions for secure storage of sensitive information.
 
 
 Team:
