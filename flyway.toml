@@ -1,9 +1,9 @@
 
 [flyway]
-locations = ["filesystem:migrations"]
+locations = ["filesystem:../migrations"]
  
 [environments.default]
-locations = ["filesystem:migrations"]
+locations = ["filesystem:../migrations"]
 
 # Update the URL to connect to your MSSQL server
 
