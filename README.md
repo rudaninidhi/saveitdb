@@ -1,4 +1,4 @@
-FINANCE AND BUDGETING APP:
+<h1>FINANCE AND BUDGETING APP:</h1>
 
 
 Introduction:
@@ -31,8 +31,48 @@ When a user did not create a budget, it will show notification => "need a budget
 Bonus Feature: if user adds reminder in goals => it will automatically add that amount to budget/Expense every month 
 When user successfully created a budget , they will be able to add expenses  
 
+
+<h2>Technology Used : </h2>
+ 
+   <h3> 1. Terraform:   </h3>
+            Used for RDS instance creation from Infrastructure as a Code.
+<h3> 2. FlyWay:   </h3>
+            Used For The Migration of The Database
+ 
+    
+<h3> 3. GitHub Actions:   </h3>
+            Used For The CICD Pipeline.
+ 
+ 
+<h2>Terraform</h2>
+
+
+### Prerequisites
+ 
+Before you begin, ensure you have the following tools installed:
+ 
+- [Terraform](https://www.terraform.io/downloads.html)
+ 
+ 
+<h2>1.  Initialize Terraform:</h2>
+Run the following command to initialize Terraform:
+ 
+bash
+Copy code
+terraform init
+Create a main.tf File:
+Create a main.tf file in your project directory and add the following content:
+ 
+hcl
+Copy code
+
+
+## Getting Started
+ 
+These instructions will help you get a copy of the project up and running on your local machine for development and testing purposes.
+
 Step 1 - Clone the repo:
-LINK---
+https://github.com/rudaninidhi/saveitdb.git
 
 Step 2 - Deploy AWS Database:
 
@@ -40,7 +80,6 @@ Install the AWS CLI
 
 Install Terraform
 
-Create an IAM User with programmatic access on your AWS account, name this user 'terraform-user'
 
 Once the IAM User is created, save your Access key ID and your Secret access Key.
 
@@ -70,10 +109,6 @@ Enter this command into your terminal
 Enter username and password when prompted
 
 View your created database on AWS cloud
-
-
-
-
 
 
 
@@ -119,6 +154,61 @@ DB_BUILD_PASSWORD: database password
 Add new migrations (as .sql scripts) to your folder and push them to the branch
 You can view the progress of the github action on your online repository (the "actions") tab to verify that it ran successfully.
 
+
+
+## Workflow Script
+```yaml
+name: flyway
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      FLYWAY_USER: ${{ secrets.DB_BUILD_USERNAME }}
+      FLYWAY_PASSWORD: ${{ secrets.DB_BUILD_PASSWORD }}
+      FLYWAY_URL: ${{ secrets.DB_BUILD_URL }}
+      FLYWAY_CLEAN_DISABLED: false
+      FLYWAY_LOCATIONS: "filesystem:./migrations/"
+      FLYWAY_CONFIG_FILES: "filesystem:./conf/flyway.toml"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Flyway CLI
+        run: |
+          sudo apt update
+          sudo apt install -y default-jre
+          wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/7.9.1/flyway-commandline-7.9.1-linux-x64.tar.gz | tar xvz
+          sudo ln -s $(pwd)/flyway-7.9.1/flyway /usr/local/bin/flyway
+      - name: Flyway Repair
+        run: |
+          flyway repair
+ 
+      - name: Flyway Migrate
+        run: |
+          flyway migrate \
+             -url="${FLYWAY_URL}" \
+            -user="${FLYWAY_USER}" \
+            -password="${FLYWAY_PASSWORD}" \
+            -configFiles="${FLYWAY_CONFIG_FILES}"
+```
+## Workflow Steps
+1. **Checkout code:** This step checks out the repository code.
+2. **Setup Flyway CLI:** Installs the required dependencies and sets up Flyway CLI.
+3. **Create Secrets in GitHub:**
+   - Navigate to your GitHub repository.
+   - Go to the "Settings" tab.
+   - In the left sidebar, click on "Secrets."
+   - Click on "New repository secret" and add the following secrets:
+      - `DB_BUILD_USERNAME`: Your database username.
+      - `DB_BUILD_PASSWORD`: Your database password.
+      - `DB_BUILD_URL`: Your database URL.
+4. **Flyway Repair:** Repairs the metadata table if necessary.
+5. **Flyway Migrate:** Executes database migrations using Flyway.
+## Conclusion
+You now have a comprehensive setup covering KindnessKettle, AWS CloudFormation deployment, Flyway installation, and GitHub Actions for automating database migrations, with the added step of creating necessary secrets in GitHub Actions for secure storage of sensitive information.
 
 
 Team:
